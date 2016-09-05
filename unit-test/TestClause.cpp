@@ -19,11 +19,6 @@ namespace TestBeast
             Assert::Fail(L"Not yet implemented.");
         }
 
-        TEST_METHOD(Clause_operator_and)
-        {
-            Assert::Fail(L"Not yet implemented.");
-        }
-
         TEST_METHOD(Clause_toJson)
         {
             Assert::Fail(L"Not yet implemented.");

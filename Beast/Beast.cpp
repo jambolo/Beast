@@ -9,6 +9,11 @@ Beast::Expression Beast::simplify(json const & json) const
     return Expression();
 }
 
+Beast::Expression Beast::simplify(Expression const & x) const
+{
+    return Expression();
+}
+
 json Beast::Expression::toJson() const
 {
     json a = json::array();
@@ -106,7 +111,7 @@ Beast::Expression::Clause & Beast::Expression::Clause::operator &=(Beast::Expres
         if (!mask[i])
         {
             terms[i] = shorter.terms[i];
-            mask[i] = true;
+            mask[i]  = true;
         }
         else
         {
@@ -119,7 +124,6 @@ Beast::Expression::Clause & Beast::Expression::Clause::operator &=(Beast::Expres
             }
         }
     }
-
     return *this;
 }
 
@@ -142,7 +146,7 @@ nlohmann::json Beast::Expression::Clause::toJson() const
         }
     }
 
-    return json({"and", a });
+    return json({ "and", a });
 }
 
 std::string Beast::Expression::Clause::toAlgebraic() const
@@ -156,7 +160,7 @@ std::string Beast::Expression::Clause::toAlgebraic() const
             if (!a.empty())
                 a.append(" & ");
             if (!terms[i])
-                 a.append("!");
+                a.append("!");
             a.append(term);
         }
     }
