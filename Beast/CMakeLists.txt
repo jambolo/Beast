@@ -13,6 +13,8 @@ set(PRIVATE_INCLUDE_PATHS
 set(SOURCES
     Beast.cpp
     Beast.h
+    QuineMcCluskey.cpp
+#    QuineMcCluskey.h
 )
 
 add_library(Beast ${SOURCES})
