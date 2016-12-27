@@ -46,6 +46,7 @@ static Implicant combine(Implicant const & i0, Implicant const & i1)
     Implicant r;
     r.d = i0.d | (i0.v ^ i1.v);
     r.v = i0.v & ~r.d;
+    return r;
 }
 
 static bool covers(Implicant const & i0, Implicant const & i1)
@@ -125,12 +126,12 @@ std::vector<Term> minimize(std::vector<Term> const & minTerms, std::vector<Term>
 
     for (auto const & t : minTerms)
     {
-        r[numberOfOneBits(t) - 1].emplace_back(t, 0);
+        r[numberOfOneBits(t) - 1].push_back(Implicant{ t, 0 });
     }
 
     for (auto const & t : dontCares)
     {
-        r[numberOfOneBits(t) - 1].emplace_back(t, 0);
+        r[numberOfOneBits(t) - 1].push_back(Implicant{ t, 0 });
     }
 
     ImplicantList primeImplicants;
@@ -171,4 +172,7 @@ std::vector<Term> minimize(std::vector<Term> const & minTerms, std::vector<Term>
         return coversNoneOf(i, minTerms);
     }),
         primeImplicants.end());
+
+    // not finished
+    return std::vector<Term>();
 }
