@@ -1,15 +1,15 @@
 #include "Beast.h"
 
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
-Beast::Expression Beast::simplify(json const & json) const
+Beast::Expression Beast::simplify(json const & json)
 {
     return Expression();
 }
 
-Beast::Expression Beast::simplify(Expression const & x) const
+Beast::Expression Beast::simplify(Expression const & x)
 {
     return Expression();
 }
@@ -33,7 +33,7 @@ std::string Beast::Expression::toAlgebraic() const
         if (!c.terms.empty())
         {
             if (!a.empty())
-                a.append(" | ");
+                a.append(" + ");
             a.append(c.toAlgebraic());
         }
     }
@@ -55,23 +55,21 @@ Beast::Expression & Beast::Expression::operator &=(Beast::Expression const & rhs
         {
             Beast::Expression::Clause c = x & y;
             if (!c.terms.empty())
-            {
                 product.push_back(c);
-            }
         }
     }
     clauses_ = product;
     return *this;
 }
 
-Beast::Expression operator ~(Beast::Expression const & lhs)
+Beast::Expression Beast::Expression::operator ~()
 {
     // De Morgan's Laws:
     //      !(x | y | ...) = !x & !y & ...
     //      !(x & y & ...) = !x | !y | ...
 
     Beast::Expression inverse;
-    for (auto const & x : lhs.clauses_)
+    for (auto const & x : clauses_)
     {
         Beast::Expression not_x;  // Inverse of clause is an expression
         not_x.clauses_.reserve(x.terms.size());
@@ -136,13 +134,9 @@ nlohmann::json Beast::Expression::Clause::toJson() const
         {
             std::string term = "x" + std::to_string(i);
             if (terms[i])
-            {
                 a.push_back(term);
-            }
             else
-            {
                 a.push_back({ "not", term });
-            }
         }
     }
 

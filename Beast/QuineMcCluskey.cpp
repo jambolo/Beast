@@ -1,11 +1,11 @@
-//#include "QuineMcCluskey.h"
+// #include "QuineMcCluskey.h"
 
 #include <algorithm>
 #include <cassert>
 #include <vector>
 
 static size_t const MAX_VARIABLES = 32;
-typedef uint32_t Term;
+using Term = uint32_t;
 
 static bool isPowerOf2(Term x)
 {
@@ -27,8 +27,8 @@ struct Implicant
     Term d;
 };
 
-typedef std::vector<Implicant> ImplicantList;
-typedef std::vector<ImplicantList> Round; // One per number of ones
+using ImplicantList = std::vector<Implicant>;
+using Round         = std::vector<ImplicantList>; // One per number of ones
 
 bool operator ==(Implicant const & i0, Implicant const & i1)
 {
@@ -77,9 +77,7 @@ static ImplicantList findAllMatches(ImplicantList const & i0, ImplicantList cons
         {
             // If the two implicants differ by only one bit, then add the combined implicant to the next round
             if (differByOneBit(i, j))
-            {
                 combined.push_back(combine(i, j));
-            }
         }
     }
     removeDuplicates(combined);
@@ -100,8 +98,8 @@ static void removeCombinedImplicants(Round & lower, Round const & higher)
                         m.begin(),
                         m.end(),
                         [j] (Implicant const & n) {
-                    return covers(j, n);
-                }),
+                            return covers(j, n);
+                        }),
                     m.end());
             }
         }
@@ -113,8 +111,8 @@ static bool coversNoneOf(Implicant const & i, std::vector<Term> terms)
     return std::none_of(terms.begin(),
                         terms.end(),
                         [i](Term const & t) {
-        return covers(i, Implicant { t, 0 });
-    });
+                            return covers(i, Implicant{ t, 0 });
+                        });
 }
 
 std::vector<Term> minimize(std::vector<Term> const & minTerms, std::vector<Term> dontCares)
@@ -149,9 +147,7 @@ std::vector<Term> minimize(std::vector<Term> const & minTerms, std::vector<Term>
             ImplicantList combined = findAllMatches(r[n], r[n + 1]);
             next.push_back(combined);
             if (!combined.empty())
-            {
                 done = false;
-            }
         }
         if (!done)
         {
@@ -169,8 +165,8 @@ std::vector<Term> minimize(std::vector<Term> const & minTerms, std::vector<Term>
         std::remove_if(primeImplicants.begin(),
                        primeImplicants.end(),
                        [minTerms](Implicant const & i) {
-        return coversNoneOf(i, minTerms);
-    }),
+                           return coversNoneOf(i, minTerms);
+                       }),
         primeImplicants.end());
 
     // not finished
